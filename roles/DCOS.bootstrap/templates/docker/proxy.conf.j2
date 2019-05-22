@@ -1,0 +1,4 @@
+[Service]
+{% for key, value in docker_proxy_env.iteritems() %}
+Environment="{{ key }}={{ value }}"
+{% endfor %}

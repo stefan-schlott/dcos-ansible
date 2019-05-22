@@ -199,9 +199,32 @@
   when: "dcos['version'] is version('1.9', '>=')"
   loop: "{{ upgrade_dir_hash.results }}"
 
-# vvv serve files via http vvv
 
-- name: Serve bootstrap files via dockerized httpd
+#### Docker proxy stuff
+- name: create dropin directory
+  file:
+    path: "/etc/systemd/system/docker.service.d"
+    state: "directory"
+    mode: 0750
+    owner: root
+    group: root
+
+- name: add systemd dropin for Docker proxy (environment)
+  template:
+    src: "docker/proxy.conf.j2"
+    dest: "/etc/systemd/system/docker.service.d/proxy.conf"
+    mode: 0640
+    owner: root
+    group: root
+
+- name: reload and restart docker systemd daemon
+  command: "{{ item }}"
+  loop:
+    - "systemctl daemon-reload"
+    - "systemctl restart docker"
+#####
+
+- name: Serve bootstrap files via dockerized nginx
   docker_container:
     name: bootstrapnginx
     image: nginx
