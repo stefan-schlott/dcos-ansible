@@ -107,7 +107,7 @@ That file contains the general Linux-wide proxy settings and proxy settings for 
 
 An example could look like this:
 
-```
+```yml
 proxy_env:
   http_proxy: "http://{{ hostvars[groups['bootstraps'][0]].ansible_default_ipv4.address }}:3128"
   https_proxy: "http://{{ hostvars[groups['bootstraps'][0]].ansible_default_ipv4.address }}:3128"
