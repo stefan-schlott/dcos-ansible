@@ -99,6 +99,43 @@ dcos:
 ||||
 | config | yes | Yaml structure that represents a valid Mesosphere DC/OS config.yml, see below.|
 
+##### Proxy settings
+
+It is possible to use dcos-ansible behind a HTTP/S Proxy (e.g. Squid). You have to provide additional variables - e.g. by adding a file named `proxy-settings.yml` (file name is just an example) to the folder `group_vars/all`. 
+
+That file contains the general Linux-wide proxy settings and proxy settings for Docker.
+
+An example could look like this:
+
+```
+proxy_env:
+  http_proxy: "http://{{ hostvars[groups['bootstraps'][0]].ansible_default_ipv4.address }}:3128"
+  https_proxy: "http://{{ hostvars[groups['bootstraps'][0]].ansible_default_ipv4.address }}:3128"
+  no_proxy: "127.0.0.1,localhost,169.254.169.254,{{ hostvars[groups['bootstraps'][0]].ansible_default_ipv4.address }}"
+
+docker_proxy_env:
+  HTTP_PROXY: "http://{{ hostvars[groups['bootstraps'][0]].ansible_default_ipv4.address }}:3128"
+  HTTPS_PROXY: "http://{{ hostvars[groups['bootstraps'][0]].ansible_default_ipv4.address }}:3128"
+  NO_PROXY: "127.0.0.1,localhost,169.254.169.254,{{ hostvars[groups['bootstraps'][0]].ansible_default_ipv4.address }}"
+```
+
+The variables for the Linux-wide proxy settings under `proxy_env` are:
+
+| Name  | Required?  | Description  |
+|---|---|---|
+| http_proxy | REQUIRED  | URL of the Proxy server to be used for HTTP traffic |
+| https_proxy | REQUIRED  | URL of the Proxy server to be used for HTTPS traffic |
+| no_proxy | REQUIRED  | comma-separated list of destinations that should not be reached through the configured proxy - list can be empty|
+
+The variables for the Docker proxy settings under `docker_proxy_env` are:
+
+| Name  | Required?  | Description  |
+|---|---|---|
+| HTTP_PROXY | REQUIRED  | URL of the Proxy server to be used for HTTP traffic |
+| HTTPS_PROXY | REQUIRED  | URL of the Proxy server to be used for HTTPS traffic |
+| NO_PROXY | REQUIRED  | comma-separated list of destinations that should not be reached through the configured proxy - list can be empty |
+
+
 #### DC/OS config.yml parameters
 Please see [the official Mesosphere DC/OS configuration reference](https://docs.mesosphere.com/1.12/installing/production/advanced-configuration/configuration-reference/) for a full list of possible parameters.
 There are a few parameters that are used by these roles outside the DC/OS config.yml, specifically:
