@@ -4,24 +4,24 @@ scenario:
 driver:
   name: ec2
 platforms:
-  - name: bootstrap1-rhel7
+  - name: bootstrap1-rhel7-${USER:-ci}-${HOSTNAME:-local}
     image: ami-011b3ccf1bd6db744
     region: us-east-1
-    instance_type: m5.large
+    instance_type: m5.xlarge
     groups:
       - bootstraps
       - dcos
-  - name: master1-rhel7
+  - name: master1-rhel7-${USER:-ci}-${HOSTNAME:-local}
     image: ami-011b3ccf1bd6db744
     region: us-east-1
-    instance_type: m5.large
+    instance_type: m5.xlarge
     groups:
       - masters
       - dcos
-  - name: agent1-rhel7
+  - name: agent1-rhel7-${USER:-ci}-${HOSTNAME:-local}
     image: ami-011b3ccf1bd6db744
     region: us-east-1
-    instance_type: m5.large
+    instance_type: m5.xlarge
     groups:
       - agents_private
       - agents
@@ -34,8 +34,8 @@ provisioner:
     ec2:
       create: ../ec2/create.yml
       destroy: ../ec2/destroy.yml
-    converge: ../ec2/same_version_config_update_1-12.yml
-    prepare: ../ec2/install_1-12_upgrade_1-12.yml
+    converge: ../ec2/same_version_config_update.yml
+    prepare: ../ec2/install_and_upgrade.yml
   config_options:
     defaults:
       hash_behaviour: merge
